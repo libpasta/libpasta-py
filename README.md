@@ -58,3 +58,12 @@ git submodule update --init --recursive # update the submodules
 BUILD_STATIC=1 python setup.py bdist_wheel # build the wheel file for installation
 pip install dist/libpasta-{version}-{build}.whl  # install the library
 ```
+
+## Developing libpasta
+
+To build all the wheels for distribution:
+
+`docker run --rm -v `pwd`:/io quay.io/pypa/manylinux1_x86_64 /io/build-wheels.sh`
+
+(Recommended: pre-install Rust and others on a docker image, and comment
+out the rustup command)

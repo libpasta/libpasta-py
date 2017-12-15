@@ -40,7 +40,7 @@ else:
 
 def build_libpasta(base_path):
     lib_path = os.path.join(base_path, 'libpasta' + EXT_EXT)
-    here = os.path.join(os.path.abspath(os.path.dirname(__file__)), "pasta-bindings/libpasta-ffi")
+    here = os.path.join(os.path.abspath(os.path.dirname(__file__)), "pasta-bindings/libpasta/libpasta-capi/")
     log.info("%s => %s", here, lib_path)
     cmdline = ['cargo', 'build', '--release']
     if not sys.stdout.isatty():
@@ -65,7 +65,7 @@ class CustomBuildExt(build_ext):
             for ext in self.extensions:
                 lib_path = os.path.join(
                     os.path.abspath(os.path.dirname(__file__)),
-                    'pasta-bindings', 'libpasta-ffi', 'target', 'release', 'libpasta' + EXT_EXT
+                    'pasta-bindings', 'libpasta', 'libpasta-capi', 'target', 'release', 'libpasta' + EXT_EXT
                 )
                 ext.extra_objects.append(lib_path)
         build_ext.run(self)
@@ -112,7 +112,7 @@ else:
 
 setup(
     name='libpasta',
-    version='0.0.4.dev3',
+    version='0.0.5',
     url='https://libpasta.github.io/',
     description='Password hashing library',
     long_description=open('DESC.md').read(),
