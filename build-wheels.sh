@@ -31,10 +31,16 @@ index ed37aaf..fe13834 100644
  ]
 EOF
 
+
+# Uncomment this to just build one version, useful for debugging.
+# export PYVERSIONS=/opt/python/cp27-cp27m/bin
+export PYVERSIONS=/opt/python/*/bin
+
+
 # Compile wheels
-for PYBIN in /opt/python/*/bin; do
+for PYBIN in ${PYVERSIONS}; do
     "${PYBIN}/pip" install -r /io/dev-requirements.txt
-    "${PYBIN}/pip" wheel /io/ -vv -w wheelhouse/
+    "${PYBIN}/pip" wheel /io/ -vv --no-clean -w wheelhouse/
 done
 
 # # Bundle external shared libraries into the wheels
@@ -43,7 +49,7 @@ for whl in wheelhouse/*.whl; do
 done
 
 # Install packages and test
-for PYBIN in /opt/python/*/bin/; do
+for PYBIN in ${PYVERSIONS}; do
     "${PYBIN}/pip" install libpasta --no-index -f /io/wheelhouse
     (cd "$HOME"; "${PYBIN}/nosetests" libpasta)
 done
