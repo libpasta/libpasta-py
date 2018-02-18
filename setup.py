@@ -128,7 +128,7 @@ else:
 
 setup(
     name='libpasta',
-    version='0.0.6',
+    version='0.1.0-rc0',
     url='https://libpasta.github.io/',
     description='Password hashing library',
     long_description=open('DESC.md').read(),
