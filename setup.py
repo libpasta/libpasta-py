@@ -25,10 +25,12 @@ if os.environ.get('LIBPASTA_MANYLINUX') == '1':
     os.environ.setdefault('CC', 'gcc')
     os.environ.setdefault('CFLAGS', '-std=c++11')
     os.environ.setdefault('CXX', 'g++')
+    LIBPASTA_PATH = "/libpasta/libpasta-capi"
 else:
     os.environ.setdefault('CC', 'clang')
     os.environ.setdefault('CFLAGS', '-std=c++11')
     os.environ.setdefault('CXX', 'clang++')
+    LIBPASTA_PATH = os.path.join(os.path.dirname(__file__),  "../libpasta/libpasta-capi")
 
 
 PACKAGE = 'libpasta'
@@ -42,7 +44,7 @@ else:
 
 def build_libpasta(base_path):
     lib_path = os.path.join(base_path, 'libpasta' + EXT_EXT)
-    here = os.path.join(os.path.abspath(os.path.dirname(__file__)), "pasta-bindings/libpasta/libpasta-capi/")
+    here = LIBPASTA_PATH
     log.info("%s => %s", here, lib_path)
     cmdline = ['cargo', 'build', '--release']
     if not sys.stdout.isatty():
@@ -66,8 +68,7 @@ class CustomBuildExt(build_ext):
             build_libpasta(self.build_temp)
             for ext in self.extensions:
                 lib_path = os.path.join(
-                    os.path.abspath(os.path.dirname(__file__)),
-                    'pasta-bindings', 'libpasta', 'libpasta-capi', 'target', 'release', 'libpasta' + EXT_EXT
+                    LIBPASTA_PATH, 'target', 'release', 'libpasta' + EXT_EXT
                 )
                 ext.extra_objects.append(lib_path)
         build_ext.run(self)
@@ -78,14 +79,15 @@ cmdclass = {
 }
 
 package_dir = {'': '.'}
-header_dir = os.path.abspath(os.path.dirname(__file__)) + "/pasta-bindings/libpasta/libpasta-capi/include/"
+header_dir = os.path.join(LIBPASTA_PATH, "include/")
+src_path = os.path.abspath('../pasta-bindings/pasta.i')
 if os.environ.get('LIBPASTA_MANYLINUX') == '1':
     # BUILD_STATIC = True
     pasta = Extension(
         '_libpasta',
         # CentOS5 only has swig 1.3, which doesn't really work
         # Need to run `make python` in pasta-bindings before manylinux build
-        ['/io/pasta-bindings/python/pasta_wrap.cpp'],
+        ['/pasta-bindings/python/pasta_wrap.cpp'],
         language = "c++",
         include_dirs = [header_dir],
         extra_compile_args = ["-fPIC", "-c", "-g"],
@@ -94,16 +96,14 @@ if os.environ.get('LIBPASTA_MANYLINUX') == '1':
         libraries=['ssl', 'crypto', 'pthread',  'dl', 'm', 'rt', 'stdc++'],
         )
 
-    package_dir = {'': '/io/pasta-bindings/python/'}
+    package_dir = {'': '/pasta-bindings/python/'}
 elif BUILD_STATIC:
     pasta = Extension(
         '_libpasta',
-        ['pasta-bindings/pasta.i'],
+        [src_path],
         language = 'c++',
         swig_opts=[
             "-outdir", os.path.abspath(os.path.dirname(__file__)),
-            "-I" + header_dir,
-
             "-module", "libpasta",
             '-c++', 
         ],
@@ -114,11 +114,10 @@ elif BUILD_STATIC:
 else:
     pasta = Extension(
         '_libpasta',
-        ['pasta-bindings/pasta.i'],
+        [src_path],
         language = 'c++',
         swig_opts=[
             "-outdir", os.path.abspath(os.path.dirname(__file__)),
-            "-I" + header_dir,
             "-module", "libpasta",
             "-c++",
         ],
@@ -128,7 +127,7 @@ else:
 
 setup(
     name='libpasta',
-    version='0.1.0-rc0',
+    version='0.1.0rc1',
     url='https://libpasta.github.io/',
     description='Password hashing library',
     long_description=open('DESC.md').read(),

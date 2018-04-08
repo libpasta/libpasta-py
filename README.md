@@ -47,7 +47,6 @@ the library.
 In the simplest case, building wrappers for the shared library should be as
 straightforward as:
 ```
-git submodule update --init --recursive # update the submodules
 python setup.py bdist_wheel # build the wheel file for installation
 pip install dist/libpasta-{version}-{build}.whl  # install the library
 ``` 
