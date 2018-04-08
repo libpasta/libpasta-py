@@ -93,7 +93,7 @@ if os.environ.get('LIBPASTA_MANYLINUX') == '1':
         extra_compile_args = ["-fPIC", "-c", "-g"],
         extra_link_args = ["-shared"],
         # extra_objects=['libpasta.a'], # This is handled by CustomBuildExt
-        libraries=['ssl', 'crypto', 'pthread',  'dl', 'm', 'rt', 'stdc++'],
+        libraries=['pthread',  'dl', 'm', 'rt', 'stdc++'],
         )
 
     package_dir = {'': '/pasta-bindings/python/'}
@@ -109,7 +109,7 @@ elif BUILD_STATIC:
         ],
         include_dirs = [header_dir],
         # extra_objects=['libpasta.a'], # This is handled by CustomBuildExt
-        libraries=['ssl', 'crypto', 'pthread',  'dl', 'm', 'rt'],
+        libraries=['pthread',  'dl', 'm', 'rt'],
         )
 else:
     pasta = Extension(

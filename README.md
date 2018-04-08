@@ -8,9 +8,6 @@ This repository contains the libpasta python bindings.
 Currently, only 64-bit linux is supported through manylinux, but we are aiming
 to support more platforms.
 
-Both of the below approaches require `libcrypto` usually available through
-`libssl` or similar package.
-
 
 For compiling from source, [SWIG](http://www.swig.org/) is required to produce
 the library bindings, but these will be added pregenerated when the library has
